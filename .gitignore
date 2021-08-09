@@ -109,3 +109,4 @@ dist
 # IDE - VSCode
 .vscode/*
 .history/*
+/package-lock.json
