@@ -1,6 +1,6 @@
 {
 	"name": "@thankin/thumbnail-generator",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"description": "thumbnail-generator",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
