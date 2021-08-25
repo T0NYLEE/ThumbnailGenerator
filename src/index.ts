@@ -1,8 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
-//@ts-ignore
-import * as heicConvert from 'heic-convert';
 import mime from 'mime-types';
 import {exec} from 'child_process';
 export class FileS{
@@ -137,6 +135,7 @@ export const genThumbnail=async(config:ConfigS)=>{
 				if(fileExtension(f.path)==='heic'){
 					if(!fs.existsSync(newFilePathJpg)){
 						try{
+							const heicConvert=require('heic-convert');
 							const outputBuffer=await heicConvert({
 								buffer:fs.readFileSync(f.path),// the HEIC file buffer
 								format:'JPEG',// output format
