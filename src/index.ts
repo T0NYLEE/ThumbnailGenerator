@@ -75,6 +75,12 @@ async function isVideo(path:string){
 	if(!mimeStr||ise(mimeStr))return false;
 	return (mimeStr as string).toLowerCase().startsWith('video');
 }
+//根据mime信息，判断文件是否是PDF
+async function isPDF(path:string){
+	const mimeStr=await mime.lookup(path);
+	if(!mimeStr||ise(mimeStr))return false;
+	return (mimeStr as string).toLowerCase().startsWith('application/pdf');
+}
 function thumbnailPath(path:string,roots:string[],thumbnail:string):string{
 	if(ise(path)||ise(roots)||ise(thumbnail))return '';
 	for(const r of roots) if(path.startsWith(r))return path.replace(r,thumbnail+'/'+lastDirOfPath(r))+'.webp';
@@ -157,6 +163,8 @@ export const genThumbnail=async(config:ConfigS)=>{
 				}).catch(e=>{console.log(f.path);console.log(e);});
 			}else if(await isVideo(f.path)){
 				exec(`"${config.ffmpegPath}" -i "${f.path}" -ss 00:00:01.000 -vframes 1 -filter:v scale="300:-1" "${newFilePath}"`);
+			}else if(await isPDF(f.path)){
+				exec(`"${config.ffmpegPath}" -sDEVICE=jpeg -o "${newFilePath}" "${f.path}" `);
 			}
 		}return true;
 	}catch(e){return e}
