@@ -21,6 +21,7 @@ export class ConfigS{
 	srcArr:string[]=[]
 	dist:string=''
 	ffmpegPath:string=''
+	gswinPath:string=''
 }
 //判断为空
 function ise(e:any):boolean{
@@ -123,7 +124,7 @@ function timeConversion(duration:number){
 	return portions.join(' ');
 }
 export const genThumbnail=async(config:ConfigS)=>{
-	if(ise(config.dist)||ise(config.ffmpegPath)||ise(config.srcArr))throw TypeError('Config can not be empty.');
+	if(ise(config.dist)||ise(config.srcArr))throw TypeError('Config can not be empty.');
 	for(const o of config.srcArr)if(ise(o))throw TypeError('srcArr can not be empty.');
 	let timeStart=new Date().getTime();
 	try{
@@ -161,10 +162,10 @@ export const genThumbnail=async(config:ConfigS)=>{
 					if(i===photoArr.length-1)console.log(`生成缩略图耗时：${timeConversion(new Date().getTime()-timeStart)}`);
 					fs.unlink(newFilePathJpg,(e)=>{});
 				}).catch(e=>{console.log(f.path);console.log(e);});
-			}else if(await isVideo(f.path)){
+			}else if(await isVideo(f.path)&&!ise(config.ffmpegPath)){
 				exec(`"${config.ffmpegPath}" -i "${f.path}" -ss 00:00:01.000 -vframes 1 -filter:v scale="300:-1" "${newFilePath}"`);
-			}else if(await isPDF(f.path)){
-				exec(`"${config.ffmpegPath}" -sDEVICE=jpeg -o "${newFilePath}" "${f.path}" `);
+			}else if(await isPDF(f.path)&&!ise(config.gswinPath)){
+				exec(`"${config.gswinPath}" -sDEVICE=jpeg -o "${newFilePath}" "${f.path}" `);
 			}
 		}return true;
 	}catch(e){return e}
